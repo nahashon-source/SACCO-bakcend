@@ -1,0 +1,32 @@
+# --- Web framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+gunicorn==23.0.0
+
+# --- Data validation ---
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# --- Database (wired in once real persistence replaces mock repositories) ---
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# --- Auth / security ---
+python-jose[cryptography]==3.3.0
+passlib[argon2]==1.7.4
+python-multipart==0.0.20
+
+# --- Caching / background jobs (added when needed, not yet wired) ---
+redis==5.2.1
+celery==5.4.0
+
+# --- Environment ---
+python-dotenv==1.0.1
+
+# --- Dev / quality tooling ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1
+ruff==0.8.4
+black==24.10.0
