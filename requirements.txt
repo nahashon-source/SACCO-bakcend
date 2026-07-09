@@ -5,6 +5,7 @@ gunicorn==23.0.0
 
 # --- Data validation ---
 pydantic==2.10.4
+pydantic[email]==2.10.4
 pydantic-settings==2.7.1
 
 # --- Database (wired in once real persistence replaces mock repositories) ---
