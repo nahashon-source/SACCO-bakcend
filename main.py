@@ -7,6 +7,7 @@ from app.api.v1.contributions.router import router as contributions_router
 from app.api.v1.guarantors.router import router as guarantors_router
 from app.api.v1.loans.router import router as loans_router
 from app.api.v1.members.router import router as members_router
+from app.api.v1.notifications.router import router as notifications_router
 from app.api.v1.savings.router import router as savings_router
 from app.api.v1.shares.router import router as shares_router
 from app.api.v1.transactions.router import router as transactions_router
@@ -55,6 +56,7 @@ app.include_router(shares_router, prefix=settings.API_V1_PREFIX)
 app.include_router(guarantors_router, prefix=settings.API_V1_PREFIX)
 app.include_router(contributions_router, prefix=settings.API_V1_PREFIX)
 app.include_router(transactions_router, prefix=settings.API_V1_PREFIX)
+app.include_router(notifications_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])

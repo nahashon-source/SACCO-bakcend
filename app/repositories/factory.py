@@ -71,3 +71,14 @@ def get_transaction_repository() -> MockTransactionRepository:
     if settings.USE_MOCK_DATA:
         return _mock_transaction_repository
     raise NotImplementedError("Real TransactionRepository not implemented yet.")
+
+
+from app.repositories.mock.notification_repository import MockNotificationRepository
+
+_mock_notification_repository = MockNotificationRepository()
+
+
+def get_notification_repository() -> MockNotificationRepository:
+    if settings.USE_MOCK_DATA:
+        return _mock_notification_repository
+    raise NotImplementedError("Real NotificationRepository not implemented yet.")

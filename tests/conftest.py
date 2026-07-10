@@ -11,6 +11,7 @@ from app.repositories.mock.contribution_repository import reset_contribution_dat
 from app.repositories.mock.guarantor_repository import reset_guarantor_data
 from app.repositories.mock.loan_repository import reset_loan_data
 from app.repositories.mock.member_repository import reset_member_data
+from app.repositories.mock.notification_repository import reset_notification_data
 from app.repositories.mock.savings_repository import reset_savings_data
 from app.repositories.mock.shares_repository import reset_shares_data
 from app.repositories.mock.transaction_repository import reset_transaction_data
@@ -28,6 +29,7 @@ def reset_mock_data():
     reset_guarantor_data()
     reset_contribution_data()
     reset_transaction_data()
+    reset_notification_data()
     yield
 
 
