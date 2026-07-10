@@ -6,12 +6,14 @@ from app.core.config import settings
 from app.repositories.mock.loan_repository import MockLoanRepository
 from app.repositories.mock.member_repository import MockMemberRepository
 from app.repositories.mock.savings_repository import MockSavingsRepository
+from app.repositories.mock.shares_repository import MockSharesRepository
 from app.repositories.mock.user_repository import MockUserRepository
 
 _mock_user_repository = MockUserRepository()
 _mock_member_repository = MockMemberRepository()
 _mock_loan_repository = MockLoanRepository()
 _mock_savings_repository = MockSavingsRepository()
+_mock_shares_repository = MockSharesRepository()
 
 
 def get_user_repository() -> MockUserRepository:
@@ -36,3 +38,9 @@ def get_savings_repository() -> MockSavingsRepository:
     if settings.USE_MOCK_DATA:
         return _mock_savings_repository
     raise NotImplementedError("Real SavingsRepository not implemented yet.")
+
+
+def get_shares_repository() -> MockSharesRepository:
+    if settings.USE_MOCK_DATA:
+        return _mock_shares_repository
+    raise NotImplementedError("Real SharesRepository not implemented yet.")
