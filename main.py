@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.api.v1.auth.router import router as auth_router
+from app.api.v1.members.router import router as members_router
 from app.core.config import settings
 from app.core.logging import configure_logging
 from app.middleware.rate_limit import RateLimitMiddleware
@@ -25,7 +27,29 @@ app.add_middleware(
 
 app.add_middleware(RateLimitMiddleware)
 
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    """
+    Reformats every HTTPException (401, 404, etc. raised throughout the
+    app) into our standard ApiResponse envelope, so error responses have
+    the same {success, message, data, errors} shape as success responses.
+    Without this, FastAPI's default {"detail": "..."} shape would break
+    every frontend `if (!response.success)` check on any error.
+    """
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "message": exc.detail,
+            "data": None,
+            "errors": [exc.detail],
+        },
+    )
+
+
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
+app.include_router(members_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])
