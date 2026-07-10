@@ -28,4 +28,6 @@ def configure_logging() -> None:
     root_logger.addHandler(handler)
 
     # Quiet noisy third-party loggers unless we're actively debugging them.
-    logging.getLogger("uvicorn.access").setLevel(logging.WARNING if not settings.DEBUG else logging.INFO)
+    logging.getLogger("uvicorn.access").setLevel(
+        logging.WARNING if not settings.DEBUG else logging.INFO
+    )

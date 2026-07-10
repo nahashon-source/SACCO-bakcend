@@ -5,7 +5,12 @@ repository. Routes must never talk to repositories directly.
 
 from jose import JWTError
 
-from app.core.security import create_access_token, create_refresh_token, decode_token, verify_password
+from app.core.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    verify_password,
+)
 from app.models.user import User
 from app.repositories.mock.user_repository import MockUserRepository
 
@@ -31,7 +36,9 @@ class AuthService:
         if not user.is_active:
             raise InvalidCredentialsError("This account has been deactivated")
 
-        access_token = create_access_token(subject=str(user.id), extra_claims={"role": user.role.value})
+        access_token = create_access_token(
+            subject=str(user.id), extra_claims={"role": user.role.value}
+        )
         refresh_token = create_refresh_token(subject=str(user.id))
 
         return user, access_token, refresh_token
@@ -51,7 +58,9 @@ class AuthService:
         if user is None or not user.is_active:
             raise InvalidTokenError("User no longer exists or is inactive")
 
-        return create_access_token(subject=str(user.id), extra_claims={"role": user.role.value})
+        return create_access_token(
+            subject=str(user.id), extra_claims={"role": user.role.value}
+        )
 
     async def get_current_user_from_token(self, access_token: str) -> User:
         try:
