@@ -60,3 +60,14 @@ def get_contribution_repository() -> MockContributionRepository:
     if settings.USE_MOCK_DATA:
         return _mock_contribution_repository
     raise NotImplementedError("Real ContributionRepository not implemented yet.")
+
+
+from app.repositories.mock.transaction_repository import MockTransactionRepository
+
+_mock_transaction_repository = MockTransactionRepository()
+
+
+def get_transaction_repository() -> MockTransactionRepository:
+    if settings.USE_MOCK_DATA:
+        return _mock_transaction_repository
+    raise NotImplementedError("Real TransactionRepository not implemented yet.")

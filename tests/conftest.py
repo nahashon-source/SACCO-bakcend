@@ -13,6 +13,7 @@ from app.repositories.mock.loan_repository import reset_loan_data
 from app.repositories.mock.member_repository import reset_member_data
 from app.repositories.mock.savings_repository import reset_savings_data
 from app.repositories.mock.shares_repository import reset_shares_data
+from app.repositories.mock.transaction_repository import reset_transaction_data
 from app.repositories.mock.user_repository import reset_user_data
 from main import app
 
@@ -26,6 +27,7 @@ def reset_mock_data():
     reset_shares_data()
     reset_guarantor_data()
     reset_contribution_data()
+    reset_transaction_data()
     yield
 
 

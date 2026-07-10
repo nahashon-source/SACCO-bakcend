@@ -9,6 +9,7 @@ from app.api.v1.loans.router import router as loans_router
 from app.api.v1.members.router import router as members_router
 from app.api.v1.savings.router import router as savings_router
 from app.api.v1.shares.router import router as shares_router
+from app.api.v1.transactions.router import router as transactions_router
 from app.core.config import settings
 from app.core.logging import configure_logging
 from app.middleware.rate_limit import RateLimitMiddleware
@@ -53,6 +54,7 @@ app.include_router(savings_router, prefix=settings.API_V1_PREFIX)
 app.include_router(shares_router, prefix=settings.API_V1_PREFIX)
 app.include_router(guarantors_router, prefix=settings.API_V1_PREFIX)
 app.include_router(contributions_router, prefix=settings.API_V1_PREFIX)
+app.include_router(transactions_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])
