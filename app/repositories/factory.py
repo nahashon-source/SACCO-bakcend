@@ -3,6 +3,7 @@ Repository factory functions, used as FastAPI dependencies.
 """
 
 from app.core.config import settings
+from app.repositories.mock.guarantor_repository import MockGuarantorRepository
 from app.repositories.mock.loan_repository import MockLoanRepository
 from app.repositories.mock.member_repository import MockMemberRepository
 from app.repositories.mock.savings_repository import MockSavingsRepository
@@ -14,6 +15,7 @@ _mock_member_repository = MockMemberRepository()
 _mock_loan_repository = MockLoanRepository()
 _mock_savings_repository = MockSavingsRepository()
 _mock_shares_repository = MockSharesRepository()
+_mock_guarantor_repository = MockGuarantorRepository()
 
 
 def get_user_repository() -> MockUserRepository:
@@ -44,3 +46,9 @@ def get_shares_repository() -> MockSharesRepository:
     if settings.USE_MOCK_DATA:
         return _mock_shares_repository
     raise NotImplementedError("Real SharesRepository not implemented yet.")
+
+
+def get_guarantor_repository() -> MockGuarantorRepository:
+    if settings.USE_MOCK_DATA:
+        return _mock_guarantor_repository
+    raise NotImplementedError("Real GuarantorRepository not implemented yet.")

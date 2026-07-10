@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.v1.auth.router import router as auth_router
+from app.api.v1.guarantors.router import router as guarantors_router
 from app.api.v1.loans.router import router as loans_router
 from app.api.v1.members.router import router as members_router
 from app.api.v1.savings.router import router as savings_router
@@ -49,6 +50,7 @@ app.include_router(members_router, prefix=settings.API_V1_PREFIX)
 app.include_router(loans_router, prefix=settings.API_V1_PREFIX)
 app.include_router(savings_router, prefix=settings.API_V1_PREFIX)
 app.include_router(shares_router, prefix=settings.API_V1_PREFIX)
+app.include_router(guarantors_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])
