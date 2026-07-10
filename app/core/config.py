@@ -24,13 +24,10 @@ class Settings(BaseSettings):
     # --- App metadata ---
     APP_NAME: str = "SACCO Management System API"
     APP_VERSION: str = "0.1.0"
-    ENVIRONMENT: str = "development"  # development | staging | production
+    ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
     # --- Data source toggle ---
-    # When True, all repositories use in-memory mock data (see app/repositories/mock/).
-    # When False, repositories use the real SQLAlchemy/PostgreSQL implementation.
-    # This is the single switch that flips the entire persistence layer.
     USE_MOCK_DATA: bool = True
 
     # --- Database (only required when USE_MOCK_DATA=False) ---
@@ -45,8 +42,12 @@ class Settings(BaseSettings):
     # --- CORS ---
     CORS_ALLOWED_ORIGINS: list[str] = ["http://localhost:5173"]
 
-    # --- Redis / background jobs (only required once workers are wired in) ---
+    # --- Redis / rate limiting / background jobs ---
+    # Empty string = Redis-backed features (rate limiting, caching, Celery)
+    # are disabled and no-op safely. Set once Redis is actually reachable
+    # (Docker locally, or a managed Redis instance on Render).
     REDIS_URL: str = ""
+    RATE_LIMIT_PER_MINUTE: int = 60
 
     # --- API ---
     API_V1_PREFIX: str = "/api/v1"
@@ -54,11 +55,6 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    """
-    Cached settings accessor. FastAPI's dependency injection will call this
-    repeatedly per-request; lru_cache ensures the .env file is parsed once,
-    not on every call.
-    """
     return Settings()
 
 

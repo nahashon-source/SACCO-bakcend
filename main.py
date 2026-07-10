@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.auth.router import router as auth_router
 from app.core.config import settings
 from app.core.logging import configure_logging
+from app.middleware.rate_limit import RateLimitMiddleware
 
 configure_logging()
 
@@ -21,6 +22,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(RateLimitMiddleware)
 
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 
