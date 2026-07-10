@@ -108,3 +108,13 @@ class MockMemberRepository(BaseRepository[Member]):
             return False
         _members.remove(member)
         return True
+
+
+_SEED_MEMBERS = list(_members)
+
+
+def reset_member_data() -> None:
+    """Restore seed data. Called between tests for isolation — see tests/conftest.py."""
+    global _members, _next_id
+    _members = list(_SEED_MEMBERS)
+    _next_id = 5

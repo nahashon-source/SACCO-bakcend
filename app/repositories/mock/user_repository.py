@@ -54,3 +54,20 @@ class MockUserRepository(BaseRepository[User]):
             return False
         _users.remove(user)
         return True
+
+
+def reset_user_data() -> None:
+    """Restore seed data. Called between tests for isolation — see tests/conftest.py."""
+    global _users
+    _users = [
+        User(
+            id=1,
+            full_name="Demo Staff",
+            email="staff@fitsacco.example.com",
+            hashed_password=hash_password("Password123!"),
+            role=UserRole.STAFF,
+            is_active=True,
+            created_at=_now,
+            updated_at=_now,
+        )
+    ]
