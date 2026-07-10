@@ -7,7 +7,7 @@ async def test_list_savings_accounts_returns_seeded_data(client):
     response = await client.get("/api/v1/savings")
 
     assert response.status_code == 200
-    assert response.json()["data"]["totalItems"] == 3
+    assert response.json()["data"]["totalItems"] == 9
 
 
 async def test_deposit_increases_balance(client):

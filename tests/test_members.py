@@ -9,7 +9,7 @@ async def test_list_members_returns_seeded_data(client):
     assert response.status_code == 200
     body = response.json()
     assert body["success"] is True
-    assert body["data"]["totalItems"] == 4
+    assert body["data"]["totalItems"] == 12
     assert len(body["data"]["items"]) == 4
     assert "pageSize" in body["data"]  # confirms camelCase serialization
 

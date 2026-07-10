@@ -3,23 +3,17 @@ from datetime import datetime, timezone
 from app.models.notification import Notification
 from app.repositories.base import BaseRepository
 
+
+def _d(y, m, d):
+    return datetime(y, m, d, tzinfo=timezone.utc)
+
+
 _notifications: list[Notification] = [
-    Notification(
-        id=1,
-        member_id=2,
-        title="Loan application received",
-        message="Your loan application LN-2002 has been received and is under review.",
-        is_read=False,
-        created_at=datetime(2026, 6, 20, tzinfo=timezone.utc),
-    ),
-    Notification(
-        id=2,
-        member_id=1,
-        title="Contribution recorded",
-        message="Your monthly contribution of KES 2,000 has been recorded.",
-        is_read=True,
-        created_at=datetime(2026, 6, 1, tzinfo=timezone.utc),
-    ),
+    Notification(id=1, member_id=2, title="Loan application received", message="Your loan application LN-2002 has been received and is under review.", is_read=False, created_at=_d(2026, 6, 20)),
+    Notification(id=2, member_id=1, title="Contribution recorded", message="Your monthly contribution of KES 2,000 has been recorded.", is_read=True, created_at=_d(2026, 6, 1)),
+    Notification(id=3, member_id=8, title="Loan approved", message="Your loan application LN-2006 has been approved and is pending disbursement.", is_read=False, created_at=_d(2026, 7, 2)),
+    Notification(id=4, member_id=6, title="Repayment received", message="Your loan repayment of KES 30,000 has been recorded.", is_read=True, created_at=_d(2026, 5, 1)),
+    Notification(id=5, member_id=9, title="Loan application declined", message="Your loan application LN-2007 was not approved. Contact the branch for details.", is_read=False, created_at=_d(2026, 5, 14)),
 ]
 
 
@@ -63,6 +57,5 @@ _SEED_NOTIFICATIONS = list(_notifications)
 
 
 def reset_notification_data() -> None:
-    """Restore seed data. Called between tests for isolation."""
     global _notifications
     _notifications = list(_SEED_NOTIFICATIONS)
