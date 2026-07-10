@@ -82,3 +82,14 @@ def get_notification_repository() -> MockNotificationRepository:
     if settings.USE_MOCK_DATA:
         return _mock_notification_repository
     raise NotImplementedError("Real NotificationRepository not implemented yet.")
+
+
+from app.repositories.mock.settings_repository import MockSettingsRepository
+
+_mock_settings_repository = MockSettingsRepository()
+
+
+def get_settings_repository() -> MockSettingsRepository:
+    if settings.USE_MOCK_DATA:
+        return _mock_settings_repository
+    raise NotImplementedError("Real SettingsRepository not implemented yet.")
