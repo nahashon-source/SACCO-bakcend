@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: sacco-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: USE_MOCK_DATA
+        value: "true"
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: sacco-redis
+          property: connectionString
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "60"
+
+  - type: redis
+    name: sacco-redis
+    plan: free
+    ipAllowList: []
