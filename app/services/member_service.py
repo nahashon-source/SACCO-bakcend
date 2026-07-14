@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from app.models.member import Member, MemberStatus
+from app.models.member import EmploymentInfo, Member, MemberStatus, NextOfKin
 from app.repositories.mock.member_repository import MockMemberRepository
 
 
@@ -63,6 +63,22 @@ class MemberService:
         if updated is None:
             raise MemberNotFoundError(f"Member with id {member_id} not found")
         return updated
+
+    async def update_next_of_kin(
+        self, member_id: int, full_name: str, relationship: str, phone_number: str
+    ) -> Member:
+        await self.get_member(member_id)
+        next_of_kin = NextOfKin(full_name=full_name, relationship=relationship, phone_number=phone_number)
+        return await self._member_repository.update(member_id, {"next_of_kin": next_of_kin})
+
+    async def update_employment(
+        self, member_id: int, employer_name: str, job_title: str, monthly_income: float
+    ) -> Member:
+        await self.get_member(member_id)
+        employment = EmploymentInfo(
+            employer_name=employer_name, job_title=job_title, monthly_income=monthly_income
+        )
+        return await self._member_repository.update(member_id, {"employment": employment})
 
     async def delete_member(self, member_id: int) -> None:
         deleted = await self._member_repository.delete(member_id)

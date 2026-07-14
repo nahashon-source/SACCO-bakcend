@@ -8,8 +8,8 @@ async def test_list_share_accounts_returns_seeded_data(client):
 
     assert response.status_code == 200
     body = response.json()
-    assert body["data"]["totalItems"] == 2
-    assert body["data"]["items"][0]["totalValue"] == 500 * 100  # confirms computed property serializes
+    assert body["data"]["totalItems"] == 6
+    assert body["data"]["items"][0]["totalValue"] == 500 * 100
 
 
 async def test_purchase_shares_for_new_member_creates_account(client):
@@ -27,7 +27,7 @@ async def test_purchase_shares_for_existing_holder_accumulates(client):
     )
 
     assert response.status_code == 201
-    assert response.json()["data"]["totalShares"] == 600  # 500 seeded + 100
+    assert response.json()["data"]["totalShares"] == 600
 
 
 async def test_purchase_shares_for_nonexistent_member_fails(client):

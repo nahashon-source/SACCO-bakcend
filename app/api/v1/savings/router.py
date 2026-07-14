@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from app.repositories.factory import get_savings_repository
+from app.repositories.factory import get_member_repository, get_savings_repository
 from app.schemas.common import ApiResponse, PaginatedData
 from app.schemas.savings import SavingsAccountOut, SavingsDepositRequest, SavingsWithdrawalRequest
 from app.services.savings_service import (
@@ -13,15 +13,19 @@ router = APIRouter(prefix="/savings", tags=["Savings"])
 
 
 def get_savings_service() -> SavingsService:
-    return SavingsService(savings_repository=get_savings_repository())
+    return SavingsService(
+        savings_repository=get_savings_repository(),
+        member_repository=get_member_repository(),
+    )
 
 
 @router.get("", response_model=ApiResponse[PaginatedData[SavingsAccountOut]])
 async def list_savings_accounts(
     member_id: int | None = Query(default=None),
+    branch_id: int | None = Query(default=None),
     savings_service: SavingsService = Depends(get_savings_service),
 ):
-    accounts = await savings_service.list_accounts(member_id)
+    accounts = await savings_service.list_accounts(member_id, branch_id)
 
     return ApiResponse(
         success=True,

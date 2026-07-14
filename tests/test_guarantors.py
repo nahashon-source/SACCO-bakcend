@@ -7,7 +7,7 @@ async def test_list_guarantors_returns_seeded_data(client):
     response = await client.get("/api/v1/guarantors")
 
     assert response.status_code == 200
-    assert response.json()["data"]["totalItems"] == 2
+    assert response.json()["data"]["totalItems"] == 5
 
 
 async def test_add_guarantor_with_valid_loan_and_member_succeeds(client):
@@ -53,7 +53,6 @@ async def test_decline_pending_guarantor_request_succeeds(client):
 
 
 async def test_respond_to_already_answered_request_fails(client):
-    # Guarantor 1 is already seeded as "accepted"
     response = await client.post("/api/v1/guarantors/1/respond", json={"accept": False})
 
     assert response.status_code == 409

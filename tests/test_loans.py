@@ -8,7 +8,7 @@ async def test_list_loans_returns_seeded_data(client):
 
     assert response.status_code == 200
     body = response.json()
-    assert body["data"]["totalItems"] == 3
+    assert body["data"]["totalItems"] == 7
 
 
 async def test_apply_for_loan_with_valid_member_succeeds(client):
@@ -50,7 +50,6 @@ async def test_approve_already_approved_loan_fails(client):
 async def test_reject_loan_requires_reason(client):
     response = await client.post("/api/v1/loans/2/reject", json={"reason": "no"})
 
-    # "no" is under the 5-char minimum — Pydantic validation should reject it
     assert response.status_code == 422
 
 
@@ -64,15 +63,46 @@ async def test_reject_pending_loan_with_valid_reason_succeeds(client):
 
 
 async def test_repay_non_disbursed_loan_fails(client):
-    # Loan 2 is pending, not disbursed
     response = await client.post("/api/v1/loans/2/repay", json={"amount": 1000})
 
     assert response.status_code == 409
 
 
 async def test_repay_disbursed_loan_reduces_balance(client):
-    # Loan 1 is seeded as disbursed with outstandingBalance 75000
     response = await client.post("/api/v1/loans/1/repay", json={"amount": 25000})
 
     assert response.status_code == 200
     assert response.json()["data"]["outstandingBalance"] == 50000
+
+
+async def test_list_loans_filtered_by_branch(client):
+    # Members 1,2,3,5,8,11 are in branch 1. Loans belonging to those
+    # members: loan1(m1), loan2(m2), loan4(m5), loan6(m8) = 4 loans.
+    response = await client.get("/api/v1/loans", params={"branch_id": 1})
+
+    assert response.status_code == 200
+    items = response.json()["data"]["items"]
+    assert len(items) == 4
+    branch_1_member_ids = {1, 2, 3, 5, 8, 11}
+    assert all(item["memberId"] in branch_1_member_ids for item in items)
+
+
+async def test_disburse_approved_loan_succeeds(client):
+    response = await client.post("/api/v1/loans/6/disburse")
+
+    assert response.status_code == 200
+    body = response.json()["data"]
+    assert body["status"] == "disbursed"
+    assert body["disbursedAt"] is not None
+
+
+async def test_disburse_pending_loan_fails(client):
+    response = await client.post("/api/v1/loans/3/disburse")
+
+    assert response.status_code == 409
+
+
+async def test_disburse_already_disbursed_loan_fails(client):
+    response = await client.post("/api/v1/loans/1/disburse")
+
+    assert response.status_code == 409

@@ -4,7 +4,14 @@ In-memory Member repository. Active when settings.USE_MOCK_DATA is True.
 
 from datetime import datetime, timezone
 
-from app.models.member import Member, MemberStatus
+from app.models.member import (
+    EmploymentInfo,
+    KYCStatus,
+    Member,
+    MemberDocument,
+    MemberStatus,
+    NextOfKin,
+)
 from app.repositories.base import BaseRepository
 
 
@@ -13,18 +20,38 @@ def _d(y, m, d):
 
 
 _members: list[Member] = [
-    Member(id=1, member_number="MEM-0001", full_name="Wanjiru Kamau", email="wanjiru.kamau@example.com", phone_number="+254712345001", status=MemberStatus.ACTIVE, branch_id=1, joined_at=_d(2024, 2, 14), created_at=_d(2024, 2, 14), updated_at=_d(2024, 2, 14)),
-    Member(id=2, member_number="MEM-0002", full_name="Otieno Odhiambo", email="otieno.odhiambo@example.com", phone_number="+254712345002", status=MemberStatus.ACTIVE, branch_id=1, joined_at=_d(2024, 5, 3), created_at=_d(2024, 5, 3), updated_at=_d(2024, 5, 3)),
-    Member(id=3, member_number="MEM-0003", full_name="Achieng Njoroge", email="achieng.njoroge@example.com", phone_number="+254712345003", status=MemberStatus.INACTIVE, branch_id=1, joined_at=_d(2023, 11, 20), created_at=_d(2023, 11, 20), updated_at=_d(2023, 11, 20)),
-    Member(id=4, member_number="MEM-0004", full_name="Mutiso Kiplagat", email="mutiso.kiplagat@example.com", phone_number="+254712345004", status=MemberStatus.ACTIVE, branch_id=2, joined_at=_d(2025, 1, 9), created_at=_d(2025, 1, 9), updated_at=_d(2025, 1, 9)),
-    Member(id=5, member_number="MEM-0005", full_name="Njeri Wambui", email="njeri.wambui@example.com", phone_number="+254712345005", status=MemberStatus.ACTIVE, branch_id=1, joined_at=_d(2024, 8, 22), created_at=_d(2024, 8, 22), updated_at=_d(2024, 8, 22)),
-    Member(id=6, member_number="MEM-0006", full_name="Kiptoo Rotich", email="kiptoo.rotich@example.com", phone_number="+254712345006", status=MemberStatus.ACTIVE, branch_id=2, joined_at=_d(2024, 10, 5), created_at=_d(2024, 10, 5), updated_at=_d(2024, 10, 5)),
-    Member(id=7, member_number="MEM-0007", full_name="Adhiambo Owino", email="adhiambo.owino@example.com", phone_number="+254712345007", status=MemberStatus.SUSPENDED, branch_id=2, joined_at=_d(2023, 6, 18), created_at=_d(2023, 6, 18), updated_at=_d(2026, 3, 1)),
-    Member(id=8, member_number="MEM-0008", full_name="Mwangi Kariuki", email="mwangi.kariuki@example.com", phone_number="+254712345008", status=MemberStatus.ACTIVE, branch_id=1, joined_at=_d(2025, 3, 30), created_at=_d(2025, 3, 30), updated_at=_d(2025, 3, 30)),
-    Member(id=9, member_number="MEM-0009", full_name="Chebet Korir", email="chebet.korir@example.com", phone_number="+254712345009", status=MemberStatus.ACTIVE, branch_id=3, joined_at=_d(2025, 7, 11), created_at=_d(2025, 7, 11), updated_at=_d(2025, 7, 11)),
-    Member(id=10, member_number="MEM-0010", full_name="Wafula Simiyu", email="wafula.simiyu@example.com", phone_number="+254712345010", status=MemberStatus.ACTIVE, branch_id=3, joined_at=_d(2025, 9, 2), created_at=_d(2025, 9, 2), updated_at=_d(2025, 9, 2)),
-    Member(id=11, member_number="MEM-0011", full_name="Nyambura Githinji", email="nyambura.githinji@example.com", phone_number="+254712345011", status=MemberStatus.INACTIVE, branch_id=1, joined_at=_d(2024, 4, 17), created_at=_d(2024, 4, 17), updated_at=_d(2025, 12, 1)),
-    Member(id=12, member_number="MEM-0012", full_name="Barasa Wanyama", email="barasa.wanyama@example.com", phone_number="+254712345012", status=MemberStatus.ACTIVE, branch_id=None, joined_at=_d(2026, 1, 20), created_at=_d(2026, 1, 20), updated_at=_d(2026, 1, 20)),
+    Member(
+        id=1, member_number="MEM-0001", full_name="Wanjiru Kamau", email="wanjiru.kamau@example.com",
+        phone_number="+254712345001", status=MemberStatus.ACTIVE, branch_id=1,
+        kyc_status=KYCStatus.VERIFIED,
+        next_of_kin=NextOfKin(full_name="James Kamau", relationship="Spouse", phone_number="+254712345101"),
+        employment=EmploymentInfo(employer_name="Freight in Time Ltd", job_title="Logistics Officer", monthly_income=85000),
+        documents=[MemberDocument(id=1, document_type="national_id", file_name="wanjiru_id.pdf", uploaded_at=_d(2024, 2, 15))],
+        joined_at=_d(2024, 2, 14), created_at=_d(2024, 2, 14), updated_at=_d(2024, 2, 14),
+    ),
+    Member(id=2, member_number="MEM-0002", full_name="Otieno Odhiambo", email="otieno.odhiambo@example.com", phone_number="+254712345002", status=MemberStatus.ACTIVE, branch_id=1, kyc_status=KYCStatus.VERIFIED, joined_at=_d(2024, 5, 3), created_at=_d(2024, 5, 3), updated_at=_d(2024, 5, 3)),
+    Member(id=3, member_number="MEM-0003", full_name="Achieng Njoroge", email="achieng.njoroge@example.com", phone_number="+254712345003", status=MemberStatus.INACTIVE, branch_id=1, kyc_status=KYCStatus.PENDING, joined_at=_d(2023, 11, 20), created_at=_d(2023, 11, 20), updated_at=_d(2023, 11, 20)),
+    Member(
+        id=4, member_number="MEM-0004", full_name="Mutiso Kiplagat", email="mutiso.kiplagat@example.com",
+        phone_number="+254712345004", status=MemberStatus.ACTIVE, branch_id=2,
+        kyc_status=KYCStatus.VERIFIED,
+        next_of_kin=NextOfKin(full_name="Grace Kiplagat", relationship="Sister", phone_number="+254712345104"),
+        joined_at=_d(2025, 1, 9), created_at=_d(2025, 1, 9), updated_at=_d(2025, 1, 9),
+    ),
+    Member(id=5, member_number="MEM-0005", full_name="Njeri Wambui", email="njeri.wambui@example.com", phone_number="+254712345005", status=MemberStatus.ACTIVE, branch_id=1, kyc_status=KYCStatus.PENDING, joined_at=_d(2024, 8, 22), created_at=_d(2024, 8, 22), updated_at=_d(2024, 8, 22)),
+    Member(
+        id=6, member_number="MEM-0006", full_name="Kiptoo Rotich", email="kiptoo.rotich@example.com",
+        phone_number="+254712345006", status=MemberStatus.ACTIVE, branch_id=2,
+        kyc_status=KYCStatus.VERIFIED,
+        employment=EmploymentInfo(employer_name="Rotich Transport Co.", job_title="Owner", monthly_income=150000),
+        joined_at=_d(2024, 10, 5), created_at=_d(2024, 10, 5), updated_at=_d(2024, 10, 5),
+    ),
+    Member(id=7, member_number="MEM-0007", full_name="Adhiambo Owino", email="adhiambo.owino@example.com", phone_number="+254712345007", status=MemberStatus.SUSPENDED, branch_id=2, kyc_status=KYCStatus.REJECTED, joined_at=_d(2023, 6, 18), created_at=_d(2023, 6, 18), updated_at=_d(2026, 3, 1)),
+    Member(id=8, member_number="MEM-0008", full_name="Mwangi Kariuki", email="mwangi.kariuki@example.com", phone_number="+254712345008", status=MemberStatus.ACTIVE, branch_id=1, kyc_status=KYCStatus.VERIFIED, joined_at=_d(2025, 3, 30), created_at=_d(2025, 3, 30), updated_at=_d(2025, 3, 30)),
+    Member(id=9, member_number="MEM-0009", full_name="Chebet Korir", email="chebet.korir@example.com", phone_number="+254712345009", status=MemberStatus.ACTIVE, branch_id=3, kyc_status=KYCStatus.PENDING, joined_at=_d(2025, 7, 11), created_at=_d(2025, 7, 11), updated_at=_d(2025, 7, 11)),
+    Member(id=10, member_number="MEM-0010", full_name="Wafula Simiyu", email="wafula.simiyu@example.com", phone_number="+254712345010", status=MemberStatus.ACTIVE, branch_id=3, kyc_status=KYCStatus.VERIFIED, joined_at=_d(2025, 9, 2), created_at=_d(2025, 9, 2), updated_at=_d(2025, 9, 2)),
+    Member(id=11, member_number="MEM-0011", full_name="Nyambura Githinji", email="nyambura.githinji@example.com", phone_number="+254712345011", status=MemberStatus.INACTIVE, branch_id=1, kyc_status=KYCStatus.PENDING, joined_at=_d(2024, 4, 17), created_at=_d(2024, 4, 17), updated_at=_d(2025, 12, 1)),
+    Member(id=12, member_number="MEM-0012", full_name="Barasa Wanyama", email="barasa.wanyama@example.com", phone_number="+254712345012", status=MemberStatus.ACTIVE, branch_id=None, kyc_status=KYCStatus.PENDING, joined_at=_d(2026, 1, 20), created_at=_d(2026, 1, 20), updated_at=_d(2026, 1, 20)),
 ]
 
 _next_id = 13

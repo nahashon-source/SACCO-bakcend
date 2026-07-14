@@ -9,9 +9,9 @@ async def test_list_members_returns_seeded_data(client):
     assert response.status_code == 200
     body = response.json()
     assert body["success"] is True
-    assert body["data"]["totalItems"] == 4
-    assert len(body["data"]["items"]) == 4
-    assert "pageSize" in body["data"]  # confirms camelCase serialization
+    assert body["data"]["totalItems"] == 12
+    assert len(body["data"]["items"]) == 12
+    assert "pageSize" in body["data"]
 
 
 async def test_list_members_search_filters_results(client):
@@ -61,5 +61,55 @@ async def test_update_member_success(client):
 
 async def test_delete_nonexistent_member_returns_404(client):
     response = await client.delete("/api/v1/members/999")
+
+    assert response.status_code == 404
+
+
+async def test_get_member_includes_kyc_and_optional_fields(client):
+    response = await client.get("/api/v1/members/1")
+
+    assert response.status_code == 200
+    body = response.json()["data"]
+    assert body["kycStatus"] == "verified"
+    assert body["nextOfKin"]["fullName"] == "James Kamau"
+    assert body["employment"]["employerName"] == "Freight in Time Ltd"
+    assert len(body["documents"]) == 1
+
+
+async def test_get_member_with_no_optional_data_returns_nulls(client):
+    response = await client.get("/api/v1/members/2")
+
+    assert response.status_code == 200
+    body = response.json()["data"]
+    assert body["nextOfKin"] is None
+    assert body["employment"] is None
+    assert body["documents"] == []
+
+
+async def test_update_next_of_kin_succeeds(client):
+    response = await client.put(
+        "/api/v1/members/2/next-of-kin",
+        json={"fullName": "Mary Odhiambo", "relationship": "Mother", "phoneNumber": "+254712345999"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["data"]["nextOfKin"]["fullName"] == "Mary Odhiambo"
+
+
+async def test_update_employment_succeeds(client):
+    response = await client.put(
+        "/api/v1/members/2/employment",
+        json={"employerName": "Test Corp", "jobTitle": "Analyst", "monthlyIncome": 60000},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["data"]["employment"]["monthlyIncome"] == 60000
+
+
+async def test_update_next_of_kin_for_nonexistent_member_fails(client):
+    response = await client.put(
+        "/api/v1/members/999/next-of-kin",
+        json={"fullName": "Nobody", "relationship": "N/A", "phoneNumber": "+254700000000"},
+    )
 
     assert response.status_code == 404

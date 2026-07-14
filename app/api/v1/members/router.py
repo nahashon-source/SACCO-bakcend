@@ -3,7 +3,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.models.member import MemberStatus
 from app.repositories.factory import get_member_repository
 from app.schemas.common import ApiResponse, PaginatedData
-from app.schemas.member import CreateMemberRequest, MemberOut, UpdateMemberRequest
+from app.schemas.member import (
+    CreateMemberRequest,
+    MemberOut,
+    UpdateEmploymentInfoRequest,
+    UpdateMemberRequest,
+    UpdateNextOfKinRequest,
+)
 from app.services.member_service import MemberNotFoundError, MemberService
 
 router = APIRouter(prefix="/members", tags=["Members"])
@@ -77,6 +83,40 @@ async def update_member(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
     return ApiResponse(success=True, message="Member updated", data=MemberOut.model_validate(member))
+
+
+@router.put("/{member_id}/next-of-kin", response_model=ApiResponse[MemberOut])
+async def update_next_of_kin(
+    member_id: int,
+    payload: UpdateNextOfKinRequest,
+    member_service: MemberService = Depends(get_member_service),
+):
+    try:
+        member = await member_service.update_next_of_kin(
+            member_id, payload.full_name, payload.relationship, payload.phone_number
+        )
+    except MemberNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    return ApiResponse(
+        success=True, message="Next of kin updated", data=MemberOut.model_validate(member)
+    )
+
+
+@router.put("/{member_id}/employment", response_model=ApiResponse[MemberOut])
+async def update_employment(
+    member_id: int,
+    payload: UpdateEmploymentInfoRequest,
+    member_service: MemberService = Depends(get_member_service),
+):
+    try:
+        member = await member_service.update_employment(
+            member_id, payload.employer_name, payload.job_title, payload.monthly_income
+        )
+    except MemberNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    return ApiResponse(success=True, message="Employment info updated", data=MemberOut.model_validate(member))
 
 
 @router.delete("/{member_id}", response_model=ApiResponse[None])

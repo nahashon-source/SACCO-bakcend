@@ -7,7 +7,7 @@ async def test_list_transactions_returns_seeded_data(client):
     response = await client.get("/api/v1/transactions")
 
     assert response.status_code == 200
-    assert response.json()["data"]["totalItems"] == 3
+    assert response.json()["data"]["totalItems"] == 10
 
 
 async def test_list_transactions_filtered_by_member(client):
@@ -22,8 +22,10 @@ async def test_list_transactions_filtered_by_type(client):
 
     assert response.status_code == 200
     items = response.json()["data"]["items"]
-    assert len(items) == 1
-    assert items[0]["reference"] == "TXN-9002"
+    # TXN-9002 (member 2) and TXN-9004 (member 6) are both loan_disbursement
+    assert len(items) == 2
+    references = {item["reference"] for item in items}
+    assert references == {"TXN-9002", "TXN-9004"}
 
 
 async def test_get_transaction_by_id_success(client):

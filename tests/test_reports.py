@@ -11,8 +11,8 @@ async def test_members_summary_report(client):
 
     assert response.status_code == 200
     data = response.json()["data"]["data"]
-    assert data["totalMembers"] == 4
-    assert data["activeMembers"] == 3
+    assert data["totalMembers"] == 12
+    assert data["activeMembers"] == 9
 
 
 async def test_loans_portfolio_report(client):
@@ -23,7 +23,7 @@ async def test_loans_portfolio_report(client):
 
     assert response.status_code == 200
     data = response.json()["data"]["data"]
-    assert data["totalLoans"] == 3
+    assert data["totalLoans"] == 7
     assert data["pendingLoans"] == 2
 
 
@@ -35,8 +35,8 @@ async def test_savings_summary_report(client):
 
     assert response.status_code == 200
     data = response.json()["data"]["data"]
-    assert data["totalAccounts"] == 3
-    assert data["totalBalance"] == 84500 + 250000 + 12300
+    assert data["totalAccounts"] == 9
+    assert data["totalBalance"] == 873600
 
 
 async def test_financial_statement_report(client):

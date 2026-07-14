@@ -45,3 +45,12 @@ async def test_deposit_to_nonexistent_account_returns_404(client):
     response = await client.post("/api/v1/savings/999/deposit", json={"amount": 100})
 
     assert response.status_code == 404
+
+
+async def test_list_savings_filtered_by_branch(client):
+    # Members 4,6,7 are in branch 2; savings accounts 4 and 6 belong to them
+    response = await client.get("/api/v1/savings", params={"branch_id": 2})
+
+    assert response.status_code == 200
+    items = response.json()["data"]["items"]
+    assert len(items) == 2

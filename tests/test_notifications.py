@@ -7,7 +7,7 @@ async def test_list_notifications_returns_seeded_data(client):
     response = await client.get("/api/v1/notifications")
 
     assert response.status_code == 200
-    assert response.json()["data"]["totalItems"] == 2
+    assert response.json()["data"]["totalItems"] == 5
 
 
 async def test_list_unread_notifications_filters_correctly(client):
@@ -15,8 +15,9 @@ async def test_list_unread_notifications_filters_correctly(client):
 
     assert response.status_code == 200
     items = response.json()["data"]["items"]
-    assert len(items) == 1
-    assert items[0]["isRead"] is False
+    # Notifications 1, 3, 5 are seeded unread
+    assert len(items) == 3
+    assert all(n["isRead"] is False for n in items)
 
 
 async def test_mark_notification_as_read_succeeds(client):

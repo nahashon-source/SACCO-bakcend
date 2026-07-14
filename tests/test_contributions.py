@@ -7,7 +7,7 @@ async def test_list_contributions_returns_seeded_data(client):
     response = await client.get("/api/v1/contributions")
 
     assert response.status_code == 200
-    assert response.json()["data"]["totalItems"] == 3
+    assert response.json()["data"]["totalItems"] == 11
 
 
 async def test_list_contributions_filtered_by_member(client):
@@ -15,7 +15,8 @@ async def test_list_contributions_filtered_by_member(client):
 
     assert response.status_code == 200
     items = response.json()["data"]["items"]
-    assert len(items) == 2
+    # Member 1 has 4 seeded contributions: 3 monthly + 1 welfare
+    assert len(items) == 4
     assert all(c["memberId"] == 1 for c in items)
 
 

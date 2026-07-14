@@ -25,13 +25,11 @@ def get_loan_service() -> LoanService:
 async def list_loans(
     member_id: int | None = Query(default=None),
     status_filter: LoanStatus | None = Query(default=None, alias="status"),
+    branch_id: int | None = Query(default=None),
     loan_service: LoanService = Depends(get_loan_service),
 ):
-    loans = await loan_service.list_loans(member_id, status_filter)
+    loans = await loan_service.list_loans(member_id, status_filter, branch_id)
 
-    # No real pagination yet at this data volume — wrapping in
-    # PaginatedData now so the frontend contract doesn't need to change
-    # once true pagination (page/pageSize slicing) is added.
     return ApiResponse(
         success=True,
         message="Loans retrieved",
@@ -91,6 +89,18 @@ async def reject_loan(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
 
     return ApiResponse(success=True, message="Loan rejected", data=LoanOut.model_validate(loan))
+
+
+@router.post("/{loan_id}/disburse", response_model=ApiResponse[LoanOut])
+async def disburse_loan(loan_id: int, loan_service: LoanService = Depends(get_loan_service)):
+    try:
+        loan = await loan_service.disburse(loan_id)
+    except LoanNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except InvalidLoanStatusTransitionError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+    return ApiResponse(success=True, message="Loan disbursed", data=LoanOut.model_validate(loan))
 
 
 @router.post("/{loan_id}/repay", response_model=ApiResponse[LoanOut])

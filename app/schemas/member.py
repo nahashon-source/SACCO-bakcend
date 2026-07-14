@@ -2,8 +2,27 @@ from datetime import datetime
 
 from pydantic import EmailStr, Field
 
-from app.models.member import MemberStatus
+from app.models.member import KYCStatus, MemberStatus
 from app.schemas.base import CamelModel
+
+
+class NextOfKinSchema(CamelModel):
+    full_name: str
+    relationship: str
+    phone_number: str
+
+
+class EmploymentInfoSchema(CamelModel):
+    employer_name: str
+    job_title: str
+    monthly_income: float
+
+
+class MemberDocumentOut(CamelModel):
+    id: int
+    document_type: str
+    file_name: str
+    uploaded_at: datetime
 
 
 class MemberOut(CamelModel):
@@ -14,6 +33,10 @@ class MemberOut(CamelModel):
     phone_number: str
     status: MemberStatus
     branch_id: int | None
+    kyc_status: KYCStatus
+    next_of_kin: NextOfKinSchema | None
+    employment: EmploymentInfoSchema | None
+    documents: list[MemberDocumentOut]
     joined_at: datetime
 
 
@@ -30,6 +53,19 @@ class UpdateMemberRequest(CamelModel):
     phone_number: str | None = None
     status: MemberStatus | None = None
     branch_id: int | None = None
+    kyc_status: KYCStatus | None = None
+
+
+class UpdateNextOfKinRequest(CamelModel):
+    full_name: str = Field(min_length=2)
+    relationship: str = Field(min_length=2)
+    phone_number: str = Field(min_length=10)
+
+
+class UpdateEmploymentInfoRequest(CamelModel):
+    employer_name: str = Field(min_length=2)
+    job_title: str = Field(min_length=2)
+    monthly_income: float = Field(ge=0)
 
 
 class MemberListParams(CamelModel):
