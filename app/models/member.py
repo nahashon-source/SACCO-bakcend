@@ -1,8 +1,3 @@
-"""
-Domain entity for a SACCO member. Storage-agnostic — mock and future
-real repositories both produce/consume this exact shape.
-"""
-
 from datetime import datetime
 from enum import Enum
 
@@ -22,6 +17,7 @@ class Member(BaseModel):
     email: EmailStr
     phone_number: str
     status: MemberStatus
+    branch_id: int | None = None
     joined_at: datetime
     created_at: datetime
     updated_at: datetime

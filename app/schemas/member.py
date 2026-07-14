@@ -13,6 +13,7 @@ class MemberOut(CamelModel):
     email: EmailStr
     phone_number: str
     status: MemberStatus
+    branch_id: int | None
     joined_at: datetime
 
 
@@ -20,6 +21,7 @@ class CreateMemberRequest(CamelModel):
     full_name: str = Field(min_length=2)
     email: EmailStr
     phone_number: str = Field(min_length=10)
+    branch_id: int | None = None
 
 
 class UpdateMemberRequest(CamelModel):
@@ -27,6 +29,7 @@ class UpdateMemberRequest(CamelModel):
     email: EmailStr | None = None
     phone_number: str | None = None
     status: MemberStatus | None = None
+    branch_id: int | None = None
 
 
 class MemberListParams(CamelModel):
@@ -34,3 +37,4 @@ class MemberListParams(CamelModel):
     page_size: int = Field(default=20, ge=1, le=100)
     search: str | None = None
     status: MemberStatus | None = None
+    branch_id: int | None = None

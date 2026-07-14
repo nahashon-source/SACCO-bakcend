@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.v1.auth.router import router as auth_router
+from app.api.v1.branches.router import router as branches_router
 from app.api.v1.contributions.router import router as contributions_router
 from app.api.v1.guarantors.router import router as guarantors_router
 from app.api.v1.loans.router import router as loans_router
@@ -41,16 +42,12 @@ app.add_middleware(RateLimitMiddleware)
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,
-        content={
-            "success": False,
-            "message": exc.detail,
-            "data": None,
-            "errors": [exc.detail],
-        },
+        content={"success": False, "message": exc.detail, "data": None, "errors": [exc.detail]},
     )
 
 
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
+app.include_router(branches_router, prefix=settings.API_V1_PREFIX)
 app.include_router(members_router, prefix=settings.API_V1_PREFIX)
 app.include_router(loans_router, prefix=settings.API_V1_PREFIX)
 app.include_router(savings_router, prefix=settings.API_V1_PREFIX)

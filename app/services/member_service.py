@@ -1,11 +1,3 @@
-"""
-Member business logic. Routes call this service; the service calls the
-repository. Includes pagination and member-number generation — rules
-that don't belong in the repository (pure data access) or the route
-(thin, HTTP-only).
-"""
-
-import math
 from datetime import datetime, timezone
 
 from app.models.member import Member, MemberStatus
@@ -26,8 +18,9 @@ class MemberService:
         page_size: int,
         search: str | None,
         status: MemberStatus | None,
+        branch_id: int | None = None,
     ) -> tuple[list[Member], int]:
-        all_matching = await self._member_repository.search(search, status)
+        all_matching = await self._member_repository.search(search, status, branch_id)
         total_items = len(all_matching)
 
         start = (page - 1) * page_size
@@ -42,18 +35,21 @@ class MemberService:
             raise MemberNotFoundError(f"Member with id {member_id} not found")
         return member
 
-    async def create_member(self, full_name: str, email: str, phone_number: str) -> Member:
+    async def create_member(
+        self, full_name: str, email: str, phone_number: str, branch_id: int | None = None
+    ) -> Member:
         existing_count = len(await self._member_repository.list_all())
         member_number = f"MEM-{existing_count + 1:04d}"
 
         now = datetime.now(timezone.utc)
         new_member = Member(
-            id=0,  # overwritten by repository on create
+            id=0,
             member_number=member_number,
             full_name=full_name,
             email=email,
             phone_number=phone_number,
             status=MemberStatus.ACTIVE,
+            branch_id=branch_id,
             joined_at=now,
             created_at=now,
             updated_at=now,
@@ -62,10 +58,7 @@ class MemberService:
         return await self._member_repository.create(new_member)
 
     async def update_member(self, member_id: int, updates: dict) -> Member:
-        # Filter out None values so partial updates (PATCH semantics)
-        # don't overwrite existing fields with null.
         clean_updates = {k: v for k, v in updates.items() if v is not None}
-
         updated = await self._member_repository.update(member_id, clean_updates)
         if updated is None:
             raise MemberNotFoundError(f"Member with id {member_id} not found")

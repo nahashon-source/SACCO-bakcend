@@ -7,6 +7,7 @@ os.environ.setdefault("ENVIRONMENT", "test")
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from app.repositories.mock.branch_repository import reset_branch_data
 from app.repositories.mock.contribution_repository import reset_contribution_data
 from app.repositories.mock.guarantor_repository import reset_guarantor_data
 from app.repositories.mock.loan_repository import reset_loan_data
@@ -23,6 +24,7 @@ from main import app
 @pytest.fixture(autouse=True)
 def reset_mock_data():
     reset_user_data()
+    reset_branch_data()
     reset_member_data()
     reset_loan_data()
     reset_savings_data()

@@ -19,11 +19,14 @@ async def list_members(
     page_size: int = Query(default=20, ge=1, le=100),
     search: str | None = Query(default=None),
     status_filter: MemberStatus | None = Query(default=None, alias="status"),
+    branch_id: int | None = Query(default=None),
     member_service: MemberService = Depends(get_member_service),
 ):
-    items, total_items = await member_service.list_members(page, page_size, search, status_filter)
+    items, total_items = await member_service.list_members(
+        page, page_size, search, status_filter, branch_id
+    )
 
-    total_pages = max(1, -(-total_items // page_size))  # ceiling division
+    total_pages = max(1, -(-total_items // page_size))
 
     return ApiResponse(
         success=True,
@@ -56,6 +59,7 @@ async def create_member(
         full_name=payload.full_name,
         email=payload.email,
         phone_number=payload.phone_number,
+        branch_id=payload.branch_id,
     )
 
     return ApiResponse(success=True, message="Member created", data=MemberOut.model_validate(member))
